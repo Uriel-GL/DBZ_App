@@ -4,8 +4,9 @@ class CardPlaneta extends StatelessWidget {
   final String image;
   final String name;
   final bool isDestroyed;
+  final bool isDetail;
 
-  const CardPlaneta({super.key, required this.image, required this.name, required this.isDestroyed});
+  const CardPlaneta({super.key, required this.image, required this.name, required this.isDestroyed, this.isDetail = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +30,10 @@ class CardPlaneta extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
-                "Planeta de Origen",
-                style: TextStyle(
+                isDetail == true ? "Planeta de Origen" : "Información del Planeta",
+                style: const TextStyle(
                   fontFamily: 'Bebas',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

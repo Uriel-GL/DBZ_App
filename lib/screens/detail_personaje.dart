@@ -1,6 +1,5 @@
 import 'package:dbz_app/models/personaje.dart';
 import 'package:dbz_app/models/planet.dart';
-import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/widgets/app-bar-dbz.dart';
 import 'package:dbz_app/widgets/card_planeta.dart';
 import 'package:dbz_app/widgets/card_transformacion.dart';

@@ -64,6 +64,11 @@ flutter:
     - assets/images/banner.png
     - assets/images/logo3.png
     - assets/images/iconBall.png
+
+    # Iconos Drawer Menu
+    - assets/icons/globe_icon.png
+    - assets/icons/icon_personajes.png
+    - assets/icons/icon_profile.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
