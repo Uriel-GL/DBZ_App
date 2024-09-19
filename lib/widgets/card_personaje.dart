@@ -1,3 +1,5 @@
+import 'package:dbz_app/models/personaje.dart';
+import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/screens/detail_personaje.dart';
 import 'package:flutter/material.dart';
 
@@ -5,22 +7,50 @@ class CardPersonaje extends StatefulWidget {
   final int id;
   final String name;
   final String imageUrl;
+  final Personaje model;
 
-  const CardPersonaje({super.key, required this.id, required this.name, required this.imageUrl});
+  const CardPersonaje({
+    super.key, 
+    required this.id, 
+    required this.name, 
+    required this.imageUrl, 
+    required this.model
+  });
 
   @override
   State<CardPersonaje> createState() => _CardPersonajeState();
 }
 
 class _CardPersonajeState extends State<CardPersonaje> {
+
+  Future<void> _navigateDetail(BuildContext context) async {
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    );
+
+    API.getCharacterById(widget.id, (data) {
+      var model = data;
+
+      Navigator.pop(context);
+
+      Navigator.push(context, 
+        MaterialPageRoute(builder: (context) => DetailPersonaje(idPersonaje: widget.id, model: model))
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         debugPrint("Se presiono ${widget.name}");
-        Navigator.push(context, 
-          MaterialPageRoute(builder: (context) => DetailPersonaje(idPersonaje: widget.id))
-        );
+        _navigateDetail(context);
       },
       child: Container(
         width: 160,

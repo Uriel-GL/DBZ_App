@@ -13,7 +13,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Personaje> personajes = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -25,7 +24,6 @@ class _HomeState extends State<Home> {
     API.getAllCharacters((response) {
       setState(() {
         personajes = response.items;
-        _isLoading = false;
         debugPrint("Personajes: ${personajes.length}");
       });
     });
@@ -55,7 +53,8 @@ class _HomeState extends State<Home> {
                   child: CardPersonaje(
                     id: personajes[index].id,
                     name: personajes[index].name,
-                    imageUrl: personajes[index].image
+                    imageUrl: personajes[index].image,
+                    model: personajes[index],
                   ),
                 );
               }),

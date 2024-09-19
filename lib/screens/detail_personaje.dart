@@ -9,44 +9,38 @@ import 'package:flutter/material.dart';
 
 class DetailPersonaje extends StatefulWidget {
   final int idPersonaje;
+  final Personaje model;
 
-  const DetailPersonaje({super.key, required this.idPersonaje});
+  const DetailPersonaje({super.key, required this.idPersonaje, required this.model});
 
   @override
   State<DetailPersonaje> createState() => _DetailPersonajesState();
 }
 
 class _DetailPersonajesState extends State<DetailPersonaje> {
-  late Personaje personaje;
-  late Planeta? planeta;
-  late List<Transformacion>? transformaciones;
+  Planeta? planeta;
+  List<Transformacion> transformaciones = [];
 
   @override
   void initState() {
     super.initState();
-    personaje = Personaje(
-      id: 0,name: '',ki: '',maxKi: '',race: '',gender: '',description: '',image: '',affiliation: '',
-      originPlanet: Planeta(id: 0, name: '', isDestroyed: false, description: '', image: ''),
-      transformations: [],
-    );
-    planeta = Planeta(id: 0, name: '', isDestroyed: false, description: '', image: '');
-    transformaciones = [];
+    planeta = widget.model.originPlanet ?? Planeta(id: 0, name: 'Sin planeta de origen', isDestroyed: false, description: '', image: '');
     fetchCharacter();
   }
 
   void fetchCharacter() async {
     API.getCharacterById(widget.idPersonaje, (response) {
       setState(() {
-        personaje = response;
-        planeta = personaje.originPlanet;
-        transformaciones = personaje.transformations;
+        // personaje = response;
+        // planeta = personaje.originPlanet;
+        // transformaciones = personaje.transformations;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    double fem = MediaQuery.of(context).size.width / 375;
+    // double fem = MediaQuery.of(context).size.width / 375;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: const AppBarDbz(),
@@ -72,8 +66,8 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                       width: double.infinity,
                       height: 490,
                       child: Image.network(
-                        personaje.image.isNotEmpty
-                            ? personaje.image
+                        widget.model.image.isNotEmpty
+                            ? widget.model.image
                             : "https://dragonball-api.com/characters/goku_normal.webp",
                         fit: BoxFit.fitHeight,
                       ),
@@ -82,7 +76,7 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                 ),
                 Center(
                   child: SaiyanTitle(
-                    title: personaje.name,
+                    title: widget.model.name,
                   ),
                 ),
                 const Center(
@@ -107,8 +101,8 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Distribuye el espacio uniformemente
                       children: [
-                        _buildKiText('Ki:', personaje.ki),
-                        _buildKiText('Max Ki:', personaje.maxKi),
+                        _buildKiText('Ki:', widget.model.ki),
+                        _buildKiText('Max Ki:', widget.model.maxKi),
                       ],
                     ),
                   ),
@@ -123,16 +117,17 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                       const Text(
                         "Información",
                         style: TextStyle(
-                            fontFamily: 'Bebas',
-                            fontSize: 28,
-                            color: Color(0xffF47A20)),
+                          fontFamily: 'Bebas',
+                          fontSize: 28,
+                          color: Color(0xffF47A20)
+                        ),
                       ),
 
                       //Espacio 
                       const SizedBox(height: 9),
 
                       //Descripción del personaje 
-                      ExpandedText(text: personaje.description),
+                      ExpandedText(text: widget.model.description),
 
                       //Espacio 
                       const SizedBox(height: 9),
@@ -154,7 +149,7 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            personaje.affiliation,
+                            widget.model.affiliation,
                             softWrap: true,
                             textAlign: TextAlign.justify,
                             style: const TextStyle(
@@ -177,7 +172,76 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                 Center(
                   child: CardPlaneta(image: planeta!.image, name: planeta!.name, isDestroyed: planeta!.isDestroyed)
                 ),
+
+                //Espacio
                 const SizedBox(height: 60),
+
+                // //Tranformaciones del personaje en caso de tener 
+                // const Center(
+                //   child: Text(
+                //     "Transformaciones",
+                //     style: TextStyle(
+                //       fontFamily: 'Bebas',
+                //       fontSize: 28,
+                //       color: Color(0xffF47A20)
+                //     ),
+                //   ),
+                // ),
+
+                // //Carrusel de transformaciones
+                // transformaciones.isNotEmpty
+                // ? Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                //   child: SizedBox(
+                //     width: MediaQuery.of(context).size.width,
+                //     height: 190,
+                //     child: GridView.builder(
+                //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                //         crossAxisCount: 1,
+                //         mainAxisSpacing: 17,
+                //         childAspectRatio: 1.3, // Relación de aspecto para hacer el diseño más fluido
+                //       ),
+                //       itemCount: 10,
+                //       scrollDirection: Axis.horizontal,
+                //       itemBuilder: (context, index) {
+                //         return Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Container(
+                //             decoration: BoxDecoration(
+                //               color: Colors.white,
+                //               borderRadius: BorderRadius.circular(15),
+                //               boxShadow: const [
+                //                 BoxShadow(
+                //                   color: Colors.grey,
+                //                   spreadRadius: 0.5, // Ajuste para sombras más suaves
+                //                   blurRadius: 5,
+                //                   offset: Offset(2, 4),
+                //                 ),
+                //               ],
+                //             ),
+                //             child: Stack(
+                //               children: [
+                //                 ClipRRect(
+                //                   borderRadius: BorderRadius.circular(15),
+                //                   child: Image.network(
+                //                     'https://dragonball-api.com/transformaciones/goku_ssj.webp',
+                //                     width: double.infinity,
+                //                     height: double.infinity,
+                //                   ),
+                //                 ),
+                //                 // Puedes añadir más contenido dentro del Stack si es necesario
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // )
+                // : const SizedBox(height: 0),
+
+                // //Espacio
+                // const SizedBox(height: 40),
               ],
             ),
           ),
