@@ -1,5 +1,6 @@
 import 'package:dbz_app/models/base_response.dart';
 import 'package:dbz_app/models/personaje.dart';
+import 'package:dbz_app/models/planet.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -59,6 +60,27 @@ class API {
 
       } else {
         throw Exception("Error al obtener los datos del id:$idPersonaje");
+      }
+    }
+    catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
+
+  ///`Función la cual traera todos los planetas`
+  static void getAllPlanets(Function(BaseResponse<Planeta>) callback) async {
+    try {
+      final response = await _fetchData(HttpMethod.get, EndPoint.allPlanets, _baseUrl);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        var data = BaseResponse.fromJson(
+          json, 
+          (itemJson) => Planeta.fromJson(itemJson)
+        );
+        callback(data);
+      } else {
+        throw Exception("Error al obtener los datos de los planetas. ${response.statusCode}");
       }
     }
     catch (e) {

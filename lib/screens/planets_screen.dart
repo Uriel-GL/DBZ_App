@@ -1,3 +1,4 @@
+import 'package:dbz_app/models/planet.dart';
 import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/widgets/app-bar-dbz.dart';
 import 'package:dbz_app/widgets/card_planeta.dart';
@@ -13,14 +14,21 @@ class PlanetsScreen extends StatefulWidget {
 }
 
 class _PlanetsScreenState extends State<PlanetsScreen> {
+  List<Planeta> _planetas = [];
 
   @override
   void initState() {
     super.initState();
+    _fetchPlanetas();
   }
 
   Future<void> _fetchPlanetas() async {
-    
+    API.getAllPlanets((response) {
+      setState(() {
+        debugPrint("Planetas: ${response.items.length}");
+        _planetas = response.items;
+      });
+    });
   }
 
   @override
@@ -48,13 +56,13 @@ class _PlanetsScreenState extends State<PlanetsScreen> {
 
                 //Lista de planetas
                 Column(
-                  children: List.generate(10, (index) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                  children: List.generate(_planetas.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: CardPlaneta(
-                        image: 'https://dragonball-api.com/planetas/Namek_U7.webp', 
-                        name: 'Namek', 
-                        isDestroyed: true,
+                        image: _planetas[index].image,
+                        name: _planetas[index].name, 
+                        isDestroyed: _planetas[index].isDestroyed,
                         isDetail: false,
                       ),
                     );
@@ -71,3 +79,4 @@ class _PlanetsScreenState extends State<PlanetsScreen> {
     );
   }
 }
+//'https://dragonball-api.com/planetas/Namek_U7.webp', 
