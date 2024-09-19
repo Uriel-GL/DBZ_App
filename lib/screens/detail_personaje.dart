@@ -3,6 +3,7 @@ import 'package:dbz_app/models/planet.dart';
 import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/widgets/app-bar-dbz.dart';
 import 'package:dbz_app/widgets/card_planeta.dart';
+import 'package:dbz_app/widgets/card_transformacion.dart';
 import 'package:dbz_app/widgets/expanded_text.dart';
 import 'package:dbz_app/widgets/saiyan_title.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +26,18 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
   void initState() {
     super.initState();
     planeta = widget.model.originPlanet ?? Planeta(id: 0, name: 'Sin planeta de origen', isDestroyed: false, description: '', image: '');
-    fetchCharacter();
+    transformaciones = widget.model.transformations ?? [];
   }
 
-  void fetchCharacter() async {
-    API.getCharacterById(widget.idPersonaje, (response) {
-      setState(() {
-        // personaje = response;
-        // planeta = personaje.originPlanet;
-        // transformaciones = personaje.transformations;
-      });
-    });
-  }
+  // void fetchCharacter() async {
+  //   API.getCharacterById(widget.idPersonaje, (response) {
+  //     setState(() {
+  //       // personaje = response;
+  //       // planeta = personaje.originPlanet;
+  //       // transformaciones = personaje.transformations;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +67,7 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                       width: double.infinity,
                       height: 490,
                       child: Image.network(
-                        widget.model.image.isNotEmpty
-                            ? widget.model.image
-                            : "https://dragonball-api.com/characters/goku_normal.webp",
+                        widget.model.image,
                         fit: BoxFit.fitHeight,
                       ),
                     ),
@@ -176,72 +175,56 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
                 //Espacio
                 const SizedBox(height: 60),
 
-                // //Tranformaciones del personaje en caso de tener 
-                // const Center(
-                //   child: Text(
-                //     "Transformaciones",
-                //     style: TextStyle(
-                //       fontFamily: 'Bebas',
-                //       fontSize: 28,
-                //       color: Color(0xffF47A20)
-                //     ),
-                //   ),
-                // ),
+                //Tranformaciones del personaje en caso de tener 
+                const Center(
+                  child: Text(
+                    "Transformaciones",
+                    style: TextStyle(
+                      fontFamily: 'Bebas',
+                      fontSize: 28,
+                      color: Color(0xffF47A20)
+                    ),
+                  ),
+                ),
 
-                // //Carrusel de transformaciones
-                // transformaciones.isNotEmpty
-                // ? Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                //   child: SizedBox(
-                //     width: MediaQuery.of(context).size.width,
-                //     height: 190,
-                //     child: GridView.builder(
-                //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                //         crossAxisCount: 1,
-                //         mainAxisSpacing: 17,
-                //         childAspectRatio: 1.3, // Relación de aspecto para hacer el diseño más fluido
-                //       ),
-                //       itemCount: 10,
-                //       scrollDirection: Axis.horizontal,
-                //       itemBuilder: (context, index) {
-                //         return Padding(
-                //           padding: const EdgeInsets.all(8.0),
-                //           child: Container(
-                //             decoration: BoxDecoration(
-                //               color: Colors.white,
-                //               borderRadius: BorderRadius.circular(15),
-                //               boxShadow: const [
-                //                 BoxShadow(
-                //                   color: Colors.grey,
-                //                   spreadRadius: 0.5, // Ajuste para sombras más suaves
-                //                   blurRadius: 5,
-                //                   offset: Offset(2, 4),
-                //                 ),
-                //               ],
-                //             ),
-                //             child: Stack(
-                //               children: [
-                //                 ClipRRect(
-                //                   borderRadius: BorderRadius.circular(15),
-                //                   child: Image.network(
-                //                     'https://dragonball-api.com/transformaciones/goku_ssj.webp',
-                //                     width: double.infinity,
-                //                     height: double.infinity,
-                //                   ),
-                //                 ),
-                //                 // Puedes añadir más contenido dentro del Stack si es necesario
-                //               ],
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // )
-                // : const SizedBox(height: 0),
+                //Carrusel de transformaciones
+                transformaciones.isNotEmpty
+                ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 38),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 190,
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        mainAxisSpacing: 17,
+                        childAspectRatio: 1.3, 
+                      ),
+                      itemCount: transformaciones.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return CardTransformacion(
+                          image: transformaciones[index].image,
+                          afiliation: widget.model.affiliation,
+                        );
+                      },
+                    ),
+                  ),
+                )
+                : const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                      "Este personaje no tiene transformaciones por ahora.",
+                      style: TextStyle(
+                        fontFamily: 'Oswald',
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.justify,
+                    ),
+                ),
 
-                // //Espacio
-                // const SizedBox(height: 40),
+                //Espacio
+                const SizedBox(height: 40),
               ],
             ),
           ),
