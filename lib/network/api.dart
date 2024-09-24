@@ -88,6 +88,25 @@ class API {
     }
   }
 
+  ///`Función la cual traera la info de un planeta por su id`
+  static void getPlanetById(int idPlaneta, Function(Planeta) callback) async {
+    try {
+      final response = await _fetchData(HttpMethod.get, EndPoint.planetById, _baseUrl, param: idPlaneta);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        // var jsonString = const JsonEncoder.withIndent(' ').convert(json);
+        // debugPrint(jsonString, wrapWidth: 1024);
+        var data = Planeta.fromJson(json);
+        callback(data);
+      }else {
+        throw Exception("Error al obtener los datos del id:$idPlaneta");
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
+
   static Future<http.Response> _fetchData(HttpMethod method, EndPoint endPoint, String baseUrl, {int? param}) async {
     Uri url;
     switch(endPoint) {

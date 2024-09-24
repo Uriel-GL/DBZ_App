@@ -41,7 +41,8 @@ class _ExpandedTextState extends State<ExpandedText> {
         ),
         children: [
           const TextSpan(text: " "),
-          TextSpan(
+          widget.text.length > maxLength
+          ? TextSpan(
             text: isTextExpanded ? "Ver menos" : "Ver más",
             style: const TextStyle(
               fontFamily: 'Oswald',
@@ -59,6 +60,7 @@ class _ExpandedTextState extends State<ExpandedText> {
                 });
               }
           )
+          : const TextSpan()
         ]
       ),
     );

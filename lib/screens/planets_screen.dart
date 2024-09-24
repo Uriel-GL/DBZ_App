@@ -34,45 +34,43 @@ class _PlanetsScreenState extends State<PlanetsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarDbz(title: "Planetas"),
+      appBar: const AppBarDbz(title: "Personajes"),
       drawer: const DrawerDbz(),
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30), 
-                topRight: Radius.circular(30)
-              )
-            ),
-            child: Column(
-              children: [
-                //Titulo de la pagina
-                const SaiyanTitle(title: "Planetas"),
-
-                //Lista de planetas
-                Column(
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30), 
+              topRight: Radius.circular(30)
+            )
+          ),
+          child: Column(
+            children: [
+              const SaiyanTitle(title: "Planetas"),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 1,
+                  childAspectRatio: 2 / 1,
+                  mainAxisSpacing: 15,
                   children: List.generate(_planetas.length, (index) {
                     return Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      padding: const EdgeInsets.only(left: 18, right: 18, top: 10),
                       child: CardPlaneta(
+                        idPlaneta: _planetas[index].id,
                         image: _planetas[index].image,
-                        name: _planetas[index].name, 
+                        name: _planetas[index].name,
                         isDestroyed: _planetas[index].isDestroyed,
                         isDetail: false,
                       ),
                     );
                   }),
                 ),
-
-                //Espacio
-                const SizedBox(height: 30)
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -168,7 +168,7 @@ class _DetailPersonajesState extends State<DetailPersonaje> {
 
                 //Card del planeta de origen 
                 Center(
-                  child: CardPlaneta(image: planeta!.image, name: planeta!.name, isDestroyed: planeta!.isDestroyed)
+                  child: CardPlaneta(idPlaneta: planeta!.id, image: planeta!.image, name: planeta!.name, isDestroyed: planeta!.isDestroyed)
                 ),
 
                 //Espacio
