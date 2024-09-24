@@ -120,6 +120,11 @@ class _DetailPlanetaState extends State<DetailPlaneta> {
                           textAlign: TextAlign.justify,
                         ),
 
+                  // Espacio para cubrir el espacio cuando no hay personajes. 
+                  _habitantes.isNotEmpty
+                  ? const SizedBox(height: 0)
+                  : const SizedBox(height: 300),
+
                   //Espacio
                   const SizedBox(height: 20),
                 ],
