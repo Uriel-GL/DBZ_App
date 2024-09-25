@@ -1,3 +1,4 @@
+import 'package:dbz_app/models/base_response.dart';
 import 'package:dbz_app/models/personaje.dart';
 import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/widgets/app-bar-dbz.dart';
@@ -15,6 +16,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Personaje> personajes = [];
+  int currentPage = 0;
+  int totalPages = 0;
 
   @override
   void initState() {
@@ -26,9 +29,16 @@ class _HomeState extends State<Home> {
     API.getAllCharacters((response) {
       setState(() {
         personajes = response.items;
+        currentPage = response.meta.currentPage; //Valor inicial
+        totalPages = response.meta.totalPages; 
         debugPrint("Personajes: ${personajes.length}");
+        debugPrint("Paginas: $totalPages");
       });
     });
+  }
+
+  Future<void> _fetchNextPagePersonajes(int page) async {
+
   }
 
   @override
@@ -50,7 +60,75 @@ class _HomeState extends State<Home> {
           ),
           child: Column(
             children: [
+              //Titulo de la pagina
               const SaiyanTitle(title: "Personajes"),
+
+              //Paginación
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 10, left: 16, right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Pagina 1",
+                      style: TextStyle(
+                        fontFamily: 'Oswald',
+                        fontSize: 20
+                      ),
+                    ),
+
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (currentPage != 1) {
+                              setState(() {
+                                currentPage -= 1;
+                              });
+                              debugPrint("Pagina Anterioir: $currentPage");
+                            } else {
+                              debugPrint("No se puede retroceder");
+                            }
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: currentPage == 1 ? Colors.grey : const Color(0xffF47A20),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 9),
+                        InkWell(
+                          onTap: () {
+                            if (currentPage < totalPages) {
+                              setState(() {
+                                currentPage += 1;
+                              });
+                              debugPrint("Pagina Siguiente: $currentPage");
+                            } else {
+                              debugPrint("No se puede avanzar");
+                            }
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: currentPage == 6 ? Colors.grey : const Color(0xffF47A20),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              //Lista de imagenes de los personajes.
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,

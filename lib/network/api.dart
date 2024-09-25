@@ -107,6 +107,11 @@ class API {
     }
   }
 
+  ///`Función la cual traera los personajes por número de pagina`
+  static void getNextPageCharacters(int page, Function(BaseResponse<Personaje>) callback) async {
+
+  }
+
   static Future<http.Response> _fetchData(HttpMethod method, EndPoint endPoint, String baseUrl, {int? param}) async {
     Uri url;
     switch(endPoint) {
