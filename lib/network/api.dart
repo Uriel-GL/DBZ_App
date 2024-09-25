@@ -16,7 +16,8 @@ enum EndPoint {
   characterById,
   allPlanets,
   planetById,
-  nextPageCharacters
+  nextPageCharacters,
+  nextPagePlanets
 }
 
 /// `Clase Api donde se manejaran las llamadas a la Api`
@@ -131,6 +132,27 @@ class API {
     }
   }
 
+  ///`Función la cual traera planetas por número de pagina`
+  static void getNextPagePlanets(int page, Function(BaseResponse<Planeta>) callback) async {
+    try {
+      final response = await _fetchData(HttpMethod.get, EndPoint.nextPagePlanets, _baseUrl, param: page);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        var data = BaseResponse.fromJson(
+          json, 
+          (jsonItem) => Planeta.fromJson(jsonItem)
+        );
+        callback(data);
+      } else {
+        throw Exception("Error al obtener la pagina $page");
+      }
+    }
+    catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
+
   static Future<http.Response> _fetchData(HttpMethod method, EndPoint endPoint, String baseUrl, {int? param}) async {
     Uri url;
     switch(endPoint) {
@@ -142,8 +164,10 @@ class API {
         url = Uri.parse("$baseUrl/planets");
       case EndPoint.planetById:
         url = Uri.parse("$baseUrl/planets/$param");
-        case EndPoint.nextPageCharacters:
+      case EndPoint.nextPageCharacters:
         url = Uri.parse("$baseUrl/characters?page=$param&limit=10");
+      case EndPoint.nextPagePlanets:
+        url = Uri.parse("$baseUrl/planets?page=$param&limit=10");
       default:
         throw Exception("EndPoint invalido");
     }

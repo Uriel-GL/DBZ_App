@@ -17,6 +17,8 @@ class _HomeState extends State<Home> {
   List<Personaje> personajes = [];
   int currentPage = 0;
   int totalPages = 0;
+  int totalPersonajes = 0;
+  int personajesInPage = 0;
 
   @override
   void initState() {
@@ -48,6 +50,8 @@ class _HomeState extends State<Home> {
         personajes = response.items;
         currentPage = response.meta.currentPage; //Valor inicial
         totalPages = response.meta.totalPages; 
+        personajesInPage = response.items.length;
+        totalPersonajes = response.meta.totalItems;
         debugPrint("Personajes: ${personajes.length}");
         debugPrint("Paginas: $totalPages");
       });
@@ -75,6 +79,7 @@ class _HomeState extends State<Home> {
 
       setState(() {
         personajes = data.items;
+        debugPrint("NUM: ${personajes.length}");
       });
     });
   }
@@ -107,12 +112,25 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Pagina $currentPage",
-                      style: const TextStyle(
-                        fontFamily: 'Oswald',
-                        fontSize: 20
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Pagina $currentPage",
+                          style: const TextStyle(
+                            fontFamily: 'Oswald',
+                            fontSize: 20
+                          ),
+                        ),
+                        Text(
+                          "Personajes $personajesInPage de $totalPersonajes",
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontFamily: 'Oswald',
+                            fontSize: 13
+                          ),
+                        ),
+                      ],
                     ),
 
                     Row(
@@ -123,6 +141,7 @@ class _HomeState extends State<Home> {
                               setState(() {
                                 currentPage -= 1;
                                 _fetchNextPage(context, currentPage);
+                                currentPage+1 == 6 ? personajesInPage -= 8 : personajesInPage -= personajes.length;
                               });
                               debugPrint("Pagina Anterioir: $currentPage");
                             } else {
@@ -146,6 +165,7 @@ class _HomeState extends State<Home> {
                               setState(() {
                                 currentPage += 1;
                                 _fetchNextPage(context, currentPage);
+                                currentPage == 6 ? personajesInPage += 8 : personajesInPage += personajes.length;
                               });
                               debugPrint("Pagina Siguiente: $currentPage");
                             } else {
@@ -156,7 +176,7 @@ class _HomeState extends State<Home> {
                             width: 32,
                             height: 32,
                             decoration: BoxDecoration(
-                              color: currentPage == 6 ? Colors.grey : const Color(0xffF47A20),
+                              color: currentPage == totalPages ? Colors.grey : const Color(0xffF47A20),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white),
