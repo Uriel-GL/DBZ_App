@@ -36,6 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   http: ^1.0.0
+  flutter_launcher_icons: ^0.14.1
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,12 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logoApp.png"
+  android_display_name: 'DragonBall App'
+  ios_display_name: 'DragonBall App'
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -64,6 +71,7 @@ flutter:
     - assets/images/banner.png
     - assets/images/logo3.png
     - assets/images/iconBall.png
+    - assets/images/logoApp.png
 
     # Iconos Drawer Menu
     - assets/icons/globe_icon.png
