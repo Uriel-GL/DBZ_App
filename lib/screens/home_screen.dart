@@ -1,4 +1,3 @@
-import 'package:dbz_app/models/base_response.dart';
 import 'package:dbz_app/models/personaje.dart';
 import 'package:dbz_app/network/api.dart';
 import 'package:dbz_app/widgets/app-bar-dbz.dart';
@@ -22,11 +21,29 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _fetchPersonajes();
+    // Ejecuta después de que el widget se ha construido completamente.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchPersonajes(context);
+    });
   }
 
-  Future<void> _fetchPersonajes() async {
+  Future<void> _fetchPersonajes(BuildContext context) async {
+    //Se incia el loader
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xffF47A20),
+          ),
+        );
+      }
+    );
+
     API.getAllCharacters((response) {
+      Navigator.pop(context);
+
       setState(() {
         personajes = response.items;
         currentPage = response.meta.currentPage; //Valor inicial
@@ -37,8 +54,29 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<void> _fetchNextPagePersonajes(int page) async {
+  Future<void> _fetchNextPage(BuildContext context, int page) async {
+    //Se incia el loader
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xffF47A20),
+          ),
+        );
+      }
+    );
 
+    //Llamada a la api
+    API.getNextPageCharacters(page, (data) {
+      //Se detiene el loader 
+      Navigator.pop(context);
+
+      setState(() {
+        personajes = data.items;
+      });
+    });
   }
 
   @override
@@ -69,9 +107,9 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Pagina 1",
-                      style: TextStyle(
+                    Text(
+                      "Pagina $currentPage",
+                      style: const TextStyle(
                         fontFamily: 'Oswald',
                         fontSize: 20
                       ),
@@ -84,6 +122,7 @@ class _HomeState extends State<Home> {
                             if (currentPage != 1) {
                               setState(() {
                                 currentPage -= 1;
+                                _fetchNextPage(context, currentPage);
                               });
                               debugPrint("Pagina Anterioir: $currentPage");
                             } else {
@@ -106,6 +145,7 @@ class _HomeState extends State<Home> {
                             if (currentPage < totalPages) {
                               setState(() {
                                 currentPage += 1;
+                                _fetchNextPage(context, currentPage);
                               });
                               debugPrint("Pagina Siguiente: $currentPage");
                             } else {

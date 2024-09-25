@@ -7,7 +7,7 @@ import 'dart:convert';
 
 /// `Metodos Http para las peticiones`
 enum HttpMethod {
-    get,
+  get,
 }
 
 /// `EndPoints base de la api`
@@ -15,16 +15,17 @@ enum EndPoint {
   allCharacters,
   characterById,
   allPlanets,
-  planetById
+  planetById,
+  nextPageCharacters
 }
 
 /// `Clase Api donde se manejaran las llamadas a la Api`
 class API {
 
-  /// URL BASE
+  ///`URL BASE`
   static String get _baseUrl => 'https://dragonball-api.com/api';
   
-  ///Función la cual traera todos los personajes
+  ///`Función la cual traera todos los personajes`
   static void getAllCharacters(Function(BaseResponse<Personaje>) callback) async {
     try {
       final response = await _fetchData(HttpMethod.get, EndPoint.allCharacters, _baseUrl);
@@ -46,7 +47,7 @@ class API {
     }
   }
 
-  ///Función la cual traera la info de un personaje por su id
+  ///`Función la cual traera la info de un personaje por su id`
   static void getCharacterById(int idPersonaje, Function(Personaje) callback) async {
     try {
       final response = await _fetchData(HttpMethod.get, EndPoint.characterById, _baseUrl, param: idPersonaje);
@@ -109,7 +110,25 @@ class API {
 
   ///`Función la cual traera los personajes por número de pagina`
   static void getNextPageCharacters(int page, Function(BaseResponse<Personaje>) callback) async {
+    try {
+      final response = await _fetchData(HttpMethod.get, EndPoint.nextPageCharacters, _baseUrl, param: page);
 
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        // var jsonString = const JsonEncoder.withIndent(' ').convert(json);
+        // debugPrint(jsonString, wrapWidth: 1024);
+        var data = BaseResponse.fromJson(
+          json, 
+          (jsonItem) => Personaje.fromJson(jsonItem)
+        );
+        callback(data);
+      } else {
+        throw Exception("Ocurrio un error al intentar ir a la pagina $page");
+      }
+    }
+    catch (e) {
+      debugPrint("Error: $e");
+    }
   }
 
   static Future<http.Response> _fetchData(HttpMethod method, EndPoint endPoint, String baseUrl, {int? param}) async {
@@ -123,6 +142,8 @@ class API {
         url = Uri.parse("$baseUrl/planets");
       case EndPoint.planetById:
         url = Uri.parse("$baseUrl/planets/$param");
+        case EndPoint.nextPageCharacters:
+        url = Uri.parse("$baseUrl/characters?page=$param&limit=10");
       default:
         throw Exception("EndPoint invalido");
     }
